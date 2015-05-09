@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>changeschedule</class>
- <widget class="QWidget" name="changeschedule">
+ <class>showschedules</class>
+ <widget class="QWidget" name="showschedules">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>All schedules</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="images/images.qrc">
+    <normaloff>:/trayicon.png</normaloff>:/trayicon.png</iconset>
   </property>
   <widget class="QListView" name="sheduleList">
    <property name="geometry">
@@ -60,6 +64,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

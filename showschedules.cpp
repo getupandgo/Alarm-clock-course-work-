@@ -1,14 +1,14 @@
-#include "changeschedule.h"
-#include "ui_changeschedule.h"
+#include "showschedules.h"
+#include "ui_showschedules.h"
 
-changeschedule::changeschedule(QWidget *parent) :
+showschedules::showschedules(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::changeschedule)
+    ui(new Ui::showschedules)
 {
     ui->setupUi(this);
 }
 
-changeschedule::~changeschedule()
+showschedules::~showschedules()
 {
     delete ui;
 }

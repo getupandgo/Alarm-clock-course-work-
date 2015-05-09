@@ -13,19 +13,22 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    changeschedule.cpp \
     newschedule.cpp \
     statistics.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    showschedules.cpp
 
 FORMS    += \
-    changeschedule.ui \
     newschedule.ui \
     statistics.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    showschedules.ui
 
 HEADERS += \
-    changeschedule.h \
     newschedule.h \
     statistics.h \
-    mainwindow.h
+    mainwindow.h \
+    showschedules.h
+
+RESOURCES += \
+    images/images.qrc

@@ -1,22 +1,22 @@
-#ifndef CHANGESCHEDULE_H
-#define CHANGESCHEDULE_H
+#ifndef SHOWSCHEDULES_H
+#define SHOWSCHEDULES_H
 
 #include <QWidget>
 
 namespace Ui {
-class changeschedule;
+class showschedules;
 }
 
-class changeschedule : public QWidget
+class showschedules : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit changeschedule(QWidget *parent = 0);
-    ~changeschedule();
+    explicit showschedules(QWidget *parent = 0);
+    ~showschedules();
 
 private:
-    Ui::changeschedule *ui;
+    Ui::showschedules *ui;
 };
 
-#endif // CHANGESCHEDULE_H
+#endif // SHOWSCHEDULES_H

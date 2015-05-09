@@ -19,20 +19,24 @@ MainWindow::MainWindow(QWidget *parent) :
 
         return;
     }
+
     QMenu *trayMenu = new QMenu;
 
-    QAction *newSheduleAction = new QAction(tr("New schedule"), this);
-    //connect(newSheduleAction, SIGNAL(triggered()), this, SLOT(hide()));
-    trayMenu->addAction(newSheduleAction);
+    QAction *newScheduleAction = new QAction(tr("New schedule"), this);
+    connect(newScheduleAction, SIGNAL(triggered()),
+            this, SLOT(onNewScheduleAction()));
+    trayMenu->addAction(newScheduleAction);
 
-    QAction *showShedulesAction = new QAction(tr("Show all shedules"), this);
-    //connect(showShedulesAction, SIGNAL(triggered()), this, SLOT(hide()));
-    trayMenu->addAction(showShedulesAction);
+    QAction *showSchedulesAction = new QAction(tr("Show all shedules"), this);
+    connect(showSchedulesAction, SIGNAL(triggered()),
+            this, SLOT(onShowSchedulesAction()));
+    trayMenu->addAction(showSchedulesAction);
 
     trayMenu->addSeparator();
 
     QAction *statisticsAction = new QAction(tr("Statistics"), this);
-    //connect(statisticsAction, SIGNAL(triggered()), this, SLOT(hide()));
+    connect(statisticsAction, SIGNAL(triggered()),
+            this, SLOT(onStatisticsAction()));
     trayMenu->addAction(statisticsAction);
 
     trayMenu->addSeparator();
@@ -42,13 +46,31 @@ MainWindow::MainWindow(QWidget *parent) :
     trayMenu->addAction(exitAction);
 
     trayIcon->setContextMenu(trayMenu);
-    trayIcon->setIcon(QIcon("D:/GitHub/course_work_alarm_clock/images/trayicon.png"));
-    //trayIcon->setIcon(QIcon(":/images/trayicon.png"));
-    //trayIcon->setIcon(QIcon(":/images/colorful.svg"));
+
+    trayIcon->setIcon(QIcon(":/trayicon.png"));
+
     trayIcon->setToolTip("Alarm Clock");
 
     trayIcon->show();
     trayIcon->showMessage("Alarm Clock", "Program is in the tray now");
+}
+
+void MainWindow::onNewScheduleAction()
+{
+    newschedule *newScheduleWidget = new newschedule();
+    newScheduleWidget->show();
+}
+
+void MainWindow::onShowSchedulesAction()
+{
+    showschedules *showSchedulesWidget = new showschedules();
+    showSchedulesWidget->show();
+}
+
+void MainWindow::onStatisticsAction()
+{
+    statistics *statisticsWidget = new statistics();
+    statisticsWidget->show();
 }
 
 MainWindow::~MainWindow()

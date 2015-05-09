@@ -6,7 +6,7 @@
 #include <QMenu>
 #include <QMessageBox>
 
-#include "changeschedule.h"
+#include "showschedules.h"
 #include "newschedule.h"
 #include "statistics.h"
 
@@ -21,6 +21,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+private slots:
+    void onNewScheduleAction();
+    void onShowSchedulesAction();
+    void onStatisticsAction();
 
 private:
     Ui::MainWindow *ui;
