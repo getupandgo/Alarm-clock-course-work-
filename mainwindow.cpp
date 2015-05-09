@@ -7,30 +7,48 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    trayIcon  = new QSystemTrayIcon(this);
-    trayIcon->setIcon(QIcon("D:/Studying/all_projects/Cpp_projects/course_work_alarm_clock/resources/trayicon.png"));
-    trayIcon->setToolTip("Alarm Clock");
+    trayIcon = new QSystemTrayIcon(this);
 
     if(!trayIcon->isSystemTrayAvailable())
     {
         QMessageBox msgBox;
-        msgBox.setText("System tray is unavailable!");
+        msgBox.setText(tr("System tray is unavailable!"));
         msgBox.exec();
+
         trayIcon = NULL;
+
         return;
     }
     QMenu *trayMenu = new QMenu;
 
-    trayMenu->addAction("New schedule");
-    trayMenu->addAction("Show all shedules");
+    QAction *newSheduleAction = new QAction(tr("New schedule"), this);
+    //connect(newSheduleAction, SIGNAL(triggered()), this, SLOT(hide()));
+    trayMenu->addAction(newSheduleAction);
+
+    QAction *showShedulesAction = new QAction(tr("Show all shedules"), this);
+    //connect(showShedulesAction, SIGNAL(triggered()), this, SLOT(hide()));
+    trayMenu->addAction(showShedulesAction);
+
     trayMenu->addSeparator();
-    trayMenu->addAction("Statistics");
+
+    QAction *statisticsAction = new QAction(tr("Statistics"), this);
+    //connect(statisticsAction, SIGNAL(triggered()), this, SLOT(hide()));
+    trayMenu->addAction(statisticsAction);
+
     trayMenu->addSeparator();
-    trayMenu->addAction("Exit");
+
+    QAction *exitAction = new QAction(tr("Exit"), this);
+    connect(exitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+    trayMenu->addAction(exitAction);
 
     trayIcon->setContextMenu(trayMenu);
+    trayIcon->setIcon(QIcon("D:/GitHub/course_work_alarm_clock/images/trayicon.png"));
+    //trayIcon->setIcon(QIcon(":/images/trayicon.png"));
+    //trayIcon->setIcon(QIcon(":/images/colorful.svg"));
+    trayIcon->setToolTip("Alarm Clock");
+
     trayIcon->show();
-    trayIcon->showMessage("AlarmClock","Program is in the tray now");
+    trayIcon->showMessage("Alarm Clock", "Program is in the tray now");
 }
 
 MainWindow::~MainWindow()
