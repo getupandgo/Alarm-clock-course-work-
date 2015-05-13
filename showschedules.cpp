@@ -1,4 +1,5 @@
 #include "showschedules.h"
+#include "newschedule.h"
 #include "ui_showschedules.h"
 
 showschedules::showschedules(QWidget *parent) :
@@ -22,15 +23,28 @@ showschedules::showschedules(QWidget *parent) :
 void showschedules::onSelectionChanged()
 {
     QDate selected = ui->calendarWidget->selectedDate();
-    ui->dataLabel->setText("Schedule on " + selected.toString() + " ");
 
     //implement send data to the server/controller
-    //implement empty schedule
+
+    if(!packet.isNull())
+        ui->dataLabel->setText("Schedule on " + selected.toString(Qt::ISODate) + ": ");
+    else
+        ui->dataLabel->setText("No schedules on " + selected.toString(Qt::ISODate) + ".");
 }
 
 void showschedules::onChangeButtonClicked()
 {
     if(ui->alarmList->selectedItems().isEmpty()) return;
+
+    newschedule *newScheduleWidget = new newschedule();
+
+    //newScheduleWidget->setTime();
+    //newScheduleWidget->setDate();
+    //newScheduleWidget->setRepeat();
+
+    newScheduleWidget->show();
+
+    delete newScheduleWidget;
 }
 
 void showschedules::onDeleteButtonClicked()

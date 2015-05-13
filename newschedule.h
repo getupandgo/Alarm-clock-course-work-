@@ -16,6 +16,9 @@ class newschedule : public QWidget
 
 public:
     explicit newschedule(QWidget *parent = 0);
+    void setDate(QDate date);
+    void setTime(QTime time);
+    void setRepeat(QString variant);
     ~newschedule();
 
 private slots:
