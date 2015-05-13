@@ -2,6 +2,9 @@
 #define NEWSCHEDULE_H
 
 #include <QWidget>
+#include <QDate>
+#include <QTime>
+#include <QDebug>
 
 namespace Ui {
 class newschedule;
@@ -15,6 +18,8 @@ public:
     explicit newschedule(QWidget *parent = 0);
     ~newschedule();
 
+private slots:
+    void onAcceptButtonClicked();
 private:
     Ui::newschedule *ui;
 };

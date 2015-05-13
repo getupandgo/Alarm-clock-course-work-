@@ -15,6 +15,11 @@ public:
     explicit showschedules(QWidget *parent = 0);
     ~showschedules();
 
+private slots:
+    void onSelectionChanged();
+    void onChangeButtonClicked();
+    void onDeleteButtonClicked();
+
 private:
     Ui::showschedules *ui;
 };
