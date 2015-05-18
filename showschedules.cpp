@@ -49,13 +49,19 @@ void showschedules::onChangeButtonClicked()
 
 void showschedules::onDeleteButtonClicked()
 {
-    if(ui->alarmList->selectedItems().isEmpty()) return;
+    QList <QWidgetItem *> items = ui->alarmList->selectedItems();
+    if(items.isEmpty()) return;
 
-    //QList <QListWidgetItem*> list = ui->alarmList->findItems(name, Qt::MatchFixedString);
-    //int row = ui->alarmList->row(list.first());
-    //QListWidgetItem* item = ui->alarmList->takeItem(row);
+    for(int i = 0; i < items.size(); ++i){
+        //
+    }
+    //QString name = ui->alarmList->selectedItems();
+    //send to server to delete
+    QList <QListWidgetItem*> list = ui->alarmList->findItems(name, Qt::MatchFixedString);
+    int row = ui->alarmList->row(list.first());
+    QListWidgetItem* item = ui->alarmList->takeItem(row);
 
-    //delete item;
+    delete item;
 }
 
 
