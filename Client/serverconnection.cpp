@@ -59,7 +59,8 @@ void ServerConnection::onData()
     }
 }
 */
-void ServerConnection::sendNewSchedule(schedule created){
+void ServerConnection::sendNewSchedule(schedule created)
+{
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
@@ -68,86 +69,59 @@ void ServerConnection::sendNewSchedule(schedule created){
         << (quint16)0
         << created.time.toUtf8()
         << created.date.toUtf8()
-        //<< created.repeat.size()
         << created.repeat.toUtf8();
-        //<< "Hello World, this is a very long text!";
 
     out.device()->seek(sizeof(quint16));
     out << (quint16)(block.size() - 2 * sizeof(quint16));
 
-    //qDebug() << (quint16)(block.size() - sizeof(quint16));
-
-/*
-    out << created.time.toUtf8()
-        << created.date.toUtf8()
-        << created.repeat.size() << created.repeat.toUtf8();
-*/
-    qint64 data_send = socket->write(block);
-    qDebug() << data_send << "bytes written!";
-
-    QByteArray dbg = block;   // create a copy to not alter the buffer itself
-    dbg.replace('\\', "\\\\"); // escape the backslash itself
-    dbg.replace('\0', "\\0");  // get rid of 0 characters
-    dbg.replace('\n', "\\n");
-    //dbg.replace('"', "\\\"");  // more special characters as you like
-    qDebug() << dbg;
+    socket->write(block);
 
 }
 
-void ServerConnection::sendSelectedDate(QString date){
-    QByteArray pack;
-    QDataStream out(&pack, QIODevice::WriteOnly);
+void ServerConnection::sendSelectedDate(QString date)
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_0);
 
-    out << date.toUtf8();
+    out << (quint16)SELECT
+        << (quint16)0
+        << date.toUtf8();
 
-    this->sendData(SELECT, pack);
+    out.device()->seek(sizeof(quint16));
+    out << (quint16)(block.size() - 2 * sizeof(quint16));
+
+    socket->write(block);
+
 }
 
 void ServerConnection::sendDeleted(schedule created){
-    QByteArray pack;
-    QDataStream out(&pack, QIODevice::WriteOnly);
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_0);
 
-    out << created.time.toUtf8()
+    out << (quint16)REMOVE
+        << (quint16)0
+        << created.time.toUtf8()
         << created.date.toUtf8()
-        << created.repeat.size() << created.repeat.toUtf8();
+        << created.repeat.toUtf8();
 
-    this->sendData(REMOVE, pack);
+    out.device()->seek(sizeof(quint16));
+    out << (quint16)(block.size() - 2 * sizeof(quint16));
+
+    socket->write(block);
 }
 
-void ServerConnection::sendPostpone(){
-    this->sendData(POSTPONE, NULL);
-}
-
-void ServerConnection::sendData(pckg_t type, QByteArray data)
+void ServerConnection::sendPostpone()
 {
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_0);
 
-    QByteArray dat;
-    QDataStream out(&dat, QIODevice::WriteOnly);
+    out << (quint16)POSTPONE;
 
-    //out //<< (quint16)0
-        //<< type
-        //<< (qint16)data.size()
-        //<< (qint16)(dat.size() - sizeof(qint16))
-      //  << data;
+    socket->write(block);
 
-    //out.device()->seek(0);
-    //out ;
-
-    //qDebug() << (quint16)(dat.size() - sizeof(quint16));
-
-
-
-    QByteArray dbg = data;   // create a copy to not alter the buffer itself
-    dbg.replace('\\', "\\\\"); // escape the backslash itself
-    dbg.replace('\0', "\\0");  // get rid of 0 characters
-    dbg.replace('\n', "\\n");
-    //dbg.replace('"', "\\\"");  // more special characters as you like
-    qDebug() << dbg;
-
-    //if(socket->write(dat) < dat.size())
-    //{
-     //   qDebug() << "No data written";
-    //}
 }
 
 void ServerConnection::parseError(QAbstractSocket::SocketError socketError)
@@ -172,5 +146,4 @@ void ServerConnection::parseError(QAbstractSocket::SocketError socketError)
 
     }
 
-    //getFortuneButton->setEnabled(true);
 }

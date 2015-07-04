@@ -24,19 +24,13 @@ TCPServer::TCPServer() : server(0), networkSession(0)
                 this, SLOT(sessionOpened()));
 
         networkSession->open();
-        qDebug() << "session opened!";
 
     } else {
         sessionOpened();
     }
-/*
-    server = new QTcpServer(this);
-    if(!server->listen(QHostAddress::Any, PORT_NUMBER))
-        qDebug() << "Server is not listening";
-    connect(server, SIGNAL(newConnection()), this, SLOT(newMember()));
-    */
 
-    connect(server, SIGNAL(newConnection()), this, SLOT(newMember()));
+    connect(server, SIGNAL(newConnection()),
+            this, SLOT(newMember()));
 
 }
 
@@ -59,13 +53,10 @@ void TCPServer::sessionOpened()
 
     server = new QTcpServer(this);
     if (!server->listen()) {
-        qDebug() << "Unable to start the server";
-        //QMessageBox::critical(this, tr("Fortune Server"),
-                             // tr("Unable to start the server: %1.")
-                             // .arg(server->errorString()));
-        //close();
+        qDebug() << "\nunable to start the server : " << server->errorString();
         return;
     }
+
     QString ipAddress;
     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
     // use the first non-localhost IPv4 address
@@ -79,10 +70,8 @@ void TCPServer::sessionOpened()
     // if we did not find one, use IPv4 localhost
     if (ipAddress.isEmpty())
         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
-    //statusLabel->setText(tr("The server is running on\n\nIP: %1\nport: %2\n\n"
-                            //"Run the Fortune Client example now.")
-                         //.arg(ipAddress).arg(tcpServer->serverPort()));
-    qDebug() << ipAddress << server->serverPort();
+
+    qDebug() << "\nserver is running on:\nIP:\n" << ipAddress << "\nport:\n"<< server->serverPort();
 }
 
 void TCPServer::newMember(){
@@ -90,14 +79,47 @@ void TCPServer::newMember(){
     client = server->nextPendingConnection();
 
     if(client){
-        qDebug()<<"connected";
-        //connect(newConnection, SIGNAL(disconnected()), this, SLOT(emitDeleteMember()));
-        //ClientConnection *t = new ClientConnection(newConnection);
+        qDebug() << '\n' << client->peerAddress().toString() << "connected";
 
-        connect(client, SIGNAL(readyRead()), this, SLOT(onData()));
-        //connect(client, SIGNAL(readyRead()), this, SLOT(decodeNew()));
+        connect(client, SIGNAL(readyRead()),
+                this, SLOT(onData()));
+
         blockSize = 0;
     }
+}
+
+void TCPServer::onData()
+{
+    in = new QDataStream(client);
+    qint16 pckt;
+    *in >> pckt;
+
+    switch(pckt)
+    {
+
+    case NEW:
+        qDebug() << "\ngot NEW";
+        decodeNew();
+    break;
+
+    case SELECT:
+        qDebug() << "\ngot SELECT";
+        decodeSelect();
+    break;
+
+    case REMOVE:
+        qDebug() << "\ngot REMOVE";
+        decodeRemove();
+    break;
+
+    case POSTPONE:
+        qDebug() << "\ngot POSTPONE";
+        emit postpone();
+    break;
+
+    default: throw pckt;
+    }
+    delete in;
 }
 
 void TCPServer::decodeNew()
@@ -130,38 +152,76 @@ void TCPServer::decodeNew()
     qDebug() << sdate;
     qDebug() << srepeat;
 
-    schedule(stime, sdate, srepeat);
+    schedule news(stime, sdate, srepeat);
+
+    emit newSchedule(news);
+
+    blockSize = 0;
 
 }
 
-void TCPServer::onData()
+void TCPServer::decodeSelect()
 {
-    in = new QDataStream(client);
-    qint16 packt;
-    *in >> packt;
+    in->setVersion(QDataStream::Qt_4_0);
 
-    switch(packt)
-    {
+    if (blockSize == 0) {
+        if (client->bytesAvailable() < (int)sizeof(quint16))
+            return;
 
-    case NEW:
-        decodeNew();
-    break;
-
-    case SELECT:
-        //decodeSelect();
-    break;
-
-    case REMOVE:
-        //decodeRemove();
-    break;
-
-    case POSTPONE:
-        //decodePostpone();
-    break;
-
-    default: throw packt;
+        *in >> blockSize;
     }
-    //delete in;
+
+    if (client->bytesAvailable() < blockSize)
+        return;
+
+    QByteArray date;
+    *in >> date;
+    QString sdate(date);
+
+    qDebug() << sdate;
+
+    emit selectDate(sdate);
+
+    blockSize = 0;
+
+}
+
+void TCPServer::decodeRemove()
+{
+    in->setVersion(QDataStream::Qt_4_0);
+
+    if (blockSize == 0) {
+        if (client->bytesAvailable() < (int)sizeof(quint16))
+            return;
+
+        *in >> blockSize;
+    }
+
+    if (client->bytesAvailable() < blockSize)
+        return;
+
+    QByteArray time;
+    *in >> time;
+    QString stime(time);
+
+    QByteArray date;
+    *in >> date;
+    QString sdate(date);
+
+    QByteArray repeat;
+    *in >> repeat;
+    QString srepeat(repeat);
+
+    qDebug() << stime;
+    qDebug() << sdate;
+    qDebug() << srepeat;
+
+    schedule removes(stime, sdate, srepeat);
+
+    emit removeSchedule(removes);
+
+    blockSize = 0;
+
 }
 
 TCPServer::~TCPServer()

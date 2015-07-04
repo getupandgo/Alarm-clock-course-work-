@@ -24,6 +24,8 @@ void showschedules::onSelectionChanged()
 {
     QDate selected = ui->calendarWidget->selectedDate();
 
+    emit dateRequested(selected.toString());
+
     //implement send data to the server/controller
 /*
     if(!packet.isNull())

@@ -53,7 +53,8 @@ void MainWindow::createTrayMenu()
     trayMenu->addSeparator();
 
     QAction *exitAction = new QAction(tr("Exit"), this);
-    connect(exitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(exitAction, SIGNAL(triggered()),
+            qApp, SLOT(quit()));
     trayMenu->addAction(exitAction);
 
     trayIcon->setContextMenu(trayMenu);
@@ -70,6 +71,9 @@ void MainWindow::onShowSchedulesAction()
 {
     showschedules *showSchedulesWidget = new showschedules();
     showSchedulesWidget->show();
+
+    connect(showSchedulesWidget, SIGNAL(dateRequested(QString)),
+            this, SIGNAL(dateRequested(QString)));
 }
 
 void MainWindow::onStatisticsAction()
@@ -85,12 +89,10 @@ void MainWindow::onNewScheduleAction()
 
     connect(newScheduleWidget, SIGNAL(newScheduleCreated(schedule)),
             this, SIGNAL(newSchedule(schedule)));
-
 }
 
 MainWindow::~MainWindow()
 {
-    //delete newScheduleWidget;
     delete trayIcon;
     delete ui;
 }

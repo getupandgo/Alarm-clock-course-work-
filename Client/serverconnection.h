@@ -36,7 +36,6 @@ signals:
 
 private:
     QTcpSocket* socket;
-    void sendData(pckg_t type, QByteArray data);
 
 private slots:
     void parseError(QAbstractSocket::SocketError socketError);

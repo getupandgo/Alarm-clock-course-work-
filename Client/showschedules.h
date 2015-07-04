@@ -16,6 +16,9 @@ public:
     explicit showschedules(QWidget *parent = 0);
     ~showschedules();
 
+signals:
+    void dateRequested(QString date);
+
 private slots:
     void onSelectionChanged();
     void onChangeButtonClicked();

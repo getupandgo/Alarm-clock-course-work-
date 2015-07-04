@@ -24,8 +24,9 @@ public:
     ~MainWindow();
 
 signals:
-    void newSchedule(schedule created);
     void newConnection(QString ip, int port);
+    void newSchedule(schedule created);
+    void dateRequested(QString date);
 
 private slots:
     void onNewScheduleAction();
@@ -39,7 +40,7 @@ private:
     QSystemTrayIcon *trayIcon = NULL;
 
 public:
-    ConnectionDialog* chooseServer;
+    ConnectionDialog *chooseServer;
 
 };
 

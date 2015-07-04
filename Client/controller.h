@@ -14,9 +14,10 @@ public:
 signals:
 
 public slots:
-    //void onConnectButtonClicked();
     void connectToServer(QString ip, int port);
+
     void sendNewSchedule(schedule created);
+    void sendDate(QString date);
 
 private:
     MainWindow* w = NULL;
