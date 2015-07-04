@@ -9,8 +9,11 @@
 #include <QNetworkConfigurationManager>
 #include <QSettings>
 #include <QNetworkSession>
+#include <QMap>
 
 #include "clientconnection.h"
+#include "watcher.h"
+#include "../resources/packet.h"
 
 #define PORT_NUMBER 1080
 
@@ -23,21 +26,21 @@ public:
     ~TCPServer();
 
 signals:
-    void addMember(QTcpSocket * socket);
-    //void deleteMember(QHostAddress);
+    void addMember(QTcpSocket *socket);
 
-    void newSchedule(schedule news);
-    void selectDate(QString date);
-    void removeSchedule(schedule remove);
-    void postpone();
+    void newSchedule(qint32 addr, Schedule news);
+    void selectDate(qint32 addr, QString date);
+    void removeSchedule(qint32 addr, Schedule remove);
+    void postpone(qint32 addr);
 
 private:
     QTcpServer *server = NULL;
     QTcpSocket *client = NULL;
     QNetworkSession *networkSession = NULL;
 
+    Watcher *database = NULL;
     qint16 blockSize;
-    QDataStream *in;
+    QDataStream *in = NULL;
 
 private slots:
     void newMember();
@@ -47,6 +50,8 @@ private slots:
     void decodeNew();
     void decodeSelect();
     void decodeRemove();
+
+    void sendSchedule(qint32 ip, Schedule snd);
 };
 
 #endif // TCP_SERVER_H

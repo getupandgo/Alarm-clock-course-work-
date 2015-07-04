@@ -32,6 +32,16 @@ TCPServer::TCPServer() : server(0), networkSession(0)
     connect(server, SIGNAL(newConnection()),
             this, SLOT(newMember()));
 
+    database = new Watcher();
+
+    connect(this, SIGNAL(newSchedule(qint32, Schedule)),
+            database, SLOT(addNewSchedule(qint32, Schedule)));
+
+    connect(this, SIGNAL(selectDate(qint32, QString)),
+            database, SLOT(searchSelected(qint32, QString)));
+
+    connect(database, SIGNAL(sendSchedule(qint32,Schedule)),
+            this, SLOT(sendSchedule(qint32,Schedule)));
 }
 
 void TCPServer::sessionOpened()
@@ -114,7 +124,7 @@ void TCPServer::onData()
 
     case POSTPONE:
         qDebug() << "\ngot POSTPONE";
-        emit postpone();
+        emit postpone(client->peerAddress().toIPv4Address());
     break;
 
     default: throw pckt;
@@ -152,11 +162,11 @@ void TCPServer::decodeNew()
     qDebug() << sdate;
     qDebug() << srepeat;
 
-    schedule news(stime, sdate, srepeat);
-
-    emit newSchedule(news);
+    Schedule news(stime, sdate, srepeat);
 
     blockSize = 0;
+
+    emit newSchedule(client->peerAddress().toIPv4Address(), news);
 
 }
 
@@ -180,7 +190,7 @@ void TCPServer::decodeSelect()
 
     qDebug() << sdate;
 
-    emit selectDate(sdate);
+    emit selectDate(client->peerAddress().toIPv4Address(), sdate);
 
     blockSize = 0;
 
@@ -216,12 +226,30 @@ void TCPServer::decodeRemove()
     qDebug() << sdate;
     qDebug() << srepeat;
 
-    schedule removes(stime, sdate, srepeat);
+    Schedule removes(stime, sdate, srepeat);
 
-    emit removeSchedule(removes);
+    emit removeSchedule(client->peerAddress().toIPv4Address(), removes);
 
     blockSize = 0;
 
+}
+
+void TCPServer::sendSchedule(qint32 ip, Schedule snd)
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_0);
+
+    out << (quint16)SELECT
+        << (quint16)0
+        << snd.time.toUtf8()
+        << snd.date.toUtf8()
+        << snd.repeat.toUtf8();
+
+    out.device()->seek(sizeof(quint16));
+    out << (quint16)(block.size() - 2 * sizeof(quint16));
+    //bad
+    client->write(block);
 }
 
 TCPServer::~TCPServer()

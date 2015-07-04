@@ -28,7 +28,7 @@ private:
     void decodeRemove(QDataStream& in);
     //void decodePostpone(QDataStream& in);
 
-    void addNewSchedule(schedule received);
+    void addNewSchedule(Schedule received);
 
     QTcpSocket* socket;
 };

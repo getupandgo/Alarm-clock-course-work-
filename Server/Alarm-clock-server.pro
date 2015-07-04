@@ -17,13 +17,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     clientconnection.cpp \
-    database.cpp \
     ../resources/schedule.cpp \
-    tcp_server.cpp
+    tcp_server.cpp \
+    watcher.cpp
 
 HEADERS += \
     clientconnection.h \
-    database.h \
     ../resources/packet.h \
     ../resources/schedule.h \
-    tcp_server.h
+    tcp_server.h \
+    watcher.h

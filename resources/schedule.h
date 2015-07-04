@@ -3,13 +3,13 @@
 
 #include <QString>
 
-struct schedule{
+struct Schedule{
     QString time;
     QString date;
     QString repeat;
 
-    schedule();
-    schedule(QString time, QString date, QString repeat);
+    Schedule();
+    Schedule(QString time, QString date, QString repeat);
 };
 
 #endif // SCHEDULE_H

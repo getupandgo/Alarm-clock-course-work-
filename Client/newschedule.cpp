@@ -21,7 +21,7 @@ void NewSchedule::onAcceptButtonClicked(){
     QString date = ui->dateEdit->date().toString(Qt::ISODate);
     QString repeat = ui->repeatBox->currentText();
 
-    schedule created(time, date, repeat);
+    Schedule created(time, date, repeat);
 
     emit newScheduleCreated(created);
 }

@@ -58,13 +58,13 @@ void ClientConnection::decodeNew(QDataStream& in){
     delete rawDate;
     delete rawRepeat;
 
-    schedule received(time,date,repeat);
+    Schedule received(time,date,repeat);
 
     addNewSchedule(received);
 
 }
 
-void ClientConnection::addNewSchedule(schedule received){
+void ClientConnection::addNewSchedule(Schedule received){
     qDebug()<<received.time<<received.date<<received.repeat;
 }
 
@@ -81,7 +81,8 @@ void ClientConnection::decodeSelect(QDataStream& in){
 
 }
 
-void ClientConnection::decodeRemove(QDataStream& in){
+void ClientConnection::decodeRemove(QDataStream& in)
+{
     char* rawTime = new char[5];
     char* rawDate = new char[10];
     int repeatSize;
@@ -100,7 +101,7 @@ void ClientConnection::decodeRemove(QDataStream& in){
     delete rawDate;
     delete rawRepeat;
 
-    schedule received(time,date,repeat);
+    Schedule received(time,date,repeat);
 
     //removeSchedule(received);
 }

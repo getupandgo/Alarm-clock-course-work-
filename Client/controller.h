@@ -16,13 +16,13 @@ signals:
 public slots:
     void connectToServer(QString ip, int port);
 
-    void sendNewSchedule(schedule created);
+    void sendNewSchedule(Schedule created);
     void sendDate(QString date);
 
 private:
-    MainWindow* w = NULL;
+    MainWindow *w = NULL;
 
-    ServerConnection *serverSocket;
+    ServerConnection *serverSocket = NULL;
     ConnectionDialog *chooseServer = NULL;
 };
 

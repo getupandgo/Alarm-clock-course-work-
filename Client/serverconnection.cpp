@@ -3,8 +3,8 @@
 ServerConnection::ServerConnection()
 {
     socket = new QTcpSocket(this);
-    //connect(socket, SIGNAL(readyRead()),
-            //this, SLOT(onData()));
+    connect(socket, SIGNAL(readyRead()),
+            this, SLOT(onData()));
 
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(parseError(QAbstractSocket::SocketError)));
@@ -29,18 +29,19 @@ void ServerConnection::connectToServer(QString host, int port)
 
 }
 
-/*
 void ServerConnection::onData()
 {
-    QDataStream in(socket);
-    qint32 packt;
-    in >> packt;
+    in = new QDataStream(socket);
+    qint16 packt;
+    *in >> packt;
+
+    blockSize = 0;
 
     switch(packt)
     {
 
     case NEW:
-        decodeNew();
+        //decodeNew();
     break;
 
     case SELECT:
@@ -48,18 +49,57 @@ void ServerConnection::onData()
     break;
 
     case REMOVE:
-        decodeRemove();
+        //decodeRemove();
     break;
 
     case POSTPONE:
-        decodePostpone();
+        //decodePostpone();
     break;
 
     default: throw packt;
     }
+    delete in;
 }
-*/
-void ServerConnection::sendNewSchedule(schedule created)
+
+void ServerConnection::decodeSelect()
+{
+    in->setVersion(QDataStream::Qt_4_0);
+
+    if (blockSize == 0) {
+        if (socket->bytesAvailable() < (int)sizeof(quint16))
+            return;
+
+        *in >> blockSize;
+    }
+
+    if (socket->bytesAvailable() < blockSize)
+        return;
+
+    QByteArray time;
+    *in >> time;
+    QString stime(time);
+
+    QByteArray date;
+    *in >> date;
+    QString sdate(date);
+
+    QByteArray repeat;
+    *in >> repeat;
+    QString srepeat(repeat);
+
+    qDebug() << stime;
+    qDebug() << sdate;
+    qDebug() << srepeat;
+
+    Schedule news(stime, sdate, srepeat);
+
+    emit displaySchedule(news);
+
+    blockSize = 0;
+
+}
+
+void ServerConnection::sendNewSchedule(Schedule created)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -73,6 +113,15 @@ void ServerConnection::sendNewSchedule(schedule created)
 
     out.device()->seek(sizeof(quint16));
     out << (quint16)(block.size() - 2 * sizeof(quint16));
+
+        QByteArray dbg = block;   // create a copy to not alter the buffer itself
+        dbg.replace('\\', "\\\\"); // escape the backslash itself
+        dbg.replace('\0', "\\0");  // get rid of 0 characters
+        dbg.replace('\n', "\\n");
+        //dbg.replace('"', "\\\"");  // more special characters as you like
+        qDebug() << dbg;
+        QString data_string(block);
+        qDebug() << data_string;
 
     socket->write(block);
 
@@ -95,7 +144,7 @@ void ServerConnection::sendSelectedDate(QString date)
 
 }
 
-void ServerConnection::sendDeleted(schedule created){
+void ServerConnection::sendDeleted(Schedule created){
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);

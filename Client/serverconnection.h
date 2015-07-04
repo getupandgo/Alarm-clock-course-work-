@@ -19,13 +19,13 @@ public:
     ServerConnection();
     void connectToServer(QString host, int port);
 
-    void sendNewSchedule(schedule created);
+    void sendNewSchedule(Schedule created);
     void sendSelectedDate(QString date);
-    void sendDeleted(schedule created);
+    void sendDeleted(Schedule created);
     void sendPostpone();
 
 public slots:
-    //void onData();
+    void onData();
 
 signals:
     void gotSchedule();
@@ -34,10 +34,16 @@ signals:
     void connectionError(QString error);
     //void gotData(QByteArray, QString);
 
+    void displaySchedule(Schedule received);
+
 private:
-    QTcpSocket* socket;
+    QTcpSocket* socket = NULL;
+    //bad
+    int blockSize;
+    QDataStream *in = NULL;
 
 private slots:
+    void decodeSelect();
     void parseError(QAbstractSocket::SocketError socketError);
 };
 

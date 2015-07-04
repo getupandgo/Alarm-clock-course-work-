@@ -87,8 +87,8 @@ void MainWindow::onNewScheduleAction()
     NewSchedule *newScheduleWidget = new NewSchedule();
     newScheduleWidget->show();
 
-    connect(newScheduleWidget, SIGNAL(newScheduleCreated(schedule)),
-            this, SIGNAL(newSchedule(schedule)));
+    connect(newScheduleWidget, SIGNAL(newScheduleCreated(Schedule)),
+            this, SIGNAL(newSchedule(Schedule)));
 }
 
 MainWindow::~MainWindow()

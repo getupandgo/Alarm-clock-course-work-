@@ -25,7 +25,7 @@ public:
 
 signals:
     void newConnection(QString ip, int port);
-    void newSchedule(schedule created);
+    void newSchedule(Schedule created);
     void dateRequested(QString date);
 
 private slots:

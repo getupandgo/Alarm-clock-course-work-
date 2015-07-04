@@ -24,7 +24,7 @@ public:
     ~NewSchedule();
 
 signals:
-    void newScheduleCreated(schedule created);
+    void newScheduleCreated(Schedule created);
 
 private slots:
     void onAcceptButtonClicked();
