@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,19 +16,30 @@ SOURCES += main.cpp \
     newschedule.cpp \
     statistics.cpp \
     mainwindow.cpp \
-    showschedules.cpp
+    showschedules.cpp \
+    serverconnection.cpp \
+    ../resources/schedule.cpp \
+    connectiondialog.cpp \
+    controller.cpp
 
 FORMS    += \
     newschedule.ui \
     statistics.ui \
     mainwindow.ui \
-    showschedules.ui
+    showschedules.ui \
+    connectiondialog.ui
 
 HEADERS += \
     newschedule.h \
     statistics.h \
     mainwindow.h \
-    showschedules.h
+    showschedules.h \
+    serverconnection.h \
+    packet.h \
+    ../resources/packet.h \
+    ../resources/schedule.h \
+    connectiondialog.h \
+    controller.h
 
 RESOURCES += \
     images/images.qrc

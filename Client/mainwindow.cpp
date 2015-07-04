@@ -6,7 +6,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->createTrayMenu();
 
+    chooseServer = new ConnectionDialog;
+    chooseServer->show();
+
+    connect(chooseServer, SIGNAL(newConnection(QString, int)),
+            this, SIGNAL(newConnection(QString, int)));
+
+}
+
+void MainWindow::createTrayMenu()
+{
     trayIcon = new QSystemTrayIcon(this);
 
     if(!trayIcon->isSystemTrayAvailable())
@@ -55,12 +66,6 @@ MainWindow::MainWindow(QWidget *parent) :
     trayIcon->showMessage("Alarm Clock", "Program is in the tray now");
 }
 
-void MainWindow::onNewScheduleAction()
-{
-    newschedule *newScheduleWidget = new newschedule();
-    newScheduleWidget->show();
-}
-
 void MainWindow::onShowSchedulesAction()
 {
     showschedules *showSchedulesWidget = new showschedules();
@@ -73,7 +78,19 @@ void MainWindow::onStatisticsAction()
     statisticsWidget->show();
 }
 
+void MainWindow::onNewScheduleAction()
+{
+    NewSchedule *newScheduleWidget = new NewSchedule();
+    newScheduleWidget->show();
+
+    connect(newScheduleWidget, SIGNAL(newScheduleCreated(schedule)),
+            this, SIGNAL(newSchedule(schedule)));
+
+}
+
 MainWindow::~MainWindow()
 {
+    //delete newScheduleWidget;
+    delete trayIcon;
     delete ui;
 }

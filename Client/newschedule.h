@@ -6,25 +6,31 @@
 #include <QTime>
 #include <QDebug>
 
+#include "../resources/schedule.h"
+
 namespace Ui {
-class newschedule;
+class NewSchedule;
 }
 
-class newschedule : public QWidget
+class NewSchedule : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit newschedule(QWidget *parent = 0);
+    explicit NewSchedule(QWidget *parent = 0);
     void setDate(QDate date);
     void setTime(QTime time);
     void setRepeat(QString variant);
-    ~newschedule();
+    ~NewSchedule();
+
+signals:
+    void newScheduleCreated(schedule created);
 
 private slots:
     void onAcceptButtonClicked();
+
 private:
-    Ui::newschedule *ui;
+    Ui::NewSchedule *ui;
 };
 
 #endif // NEWSCHEDULE_H

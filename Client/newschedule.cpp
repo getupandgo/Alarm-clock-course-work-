@@ -1,9 +1,9 @@
 #include "newschedule.h"
 #include "ui_newschedule.h"
 
-newschedule::newschedule(QWidget *parent) :
+NewSchedule::NewSchedule(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::newschedule)
+    ui(new Ui::NewSchedule)
 {
     ui->setupUi(this);
 
@@ -12,30 +12,31 @@ newschedule::newschedule(QWidget *parent) :
 
     connect(ui->acceptButton, SIGNAL(clicked()),
             this, SLOT(onAcceptButtonClicked()));
+
 }
 
-void newschedule::onAcceptButtonClicked(){
+void NewSchedule::onAcceptButtonClicked(){
     QString time = ui->timeEdit->time().toString(); //22:30:01
     time.chop(3);
     QString date = ui->dateEdit->date().toString(Qt::ISODate);
     QString repeat = ui->repeatBox->currentText();
 
-    ui->label->setText(time);
-    ui->label_2->setText(repeat);
-    ui->label_3->setText(date);
+    schedule created(time, date, repeat);
+
+    emit newScheduleCreated(created);
 }
 
-void newschedule::setDate(QDate date)
+void NewSchedule::setDate(QDate date)
 {
     ui->dateEdit->setDate(date);
 }
 
-void newschedule::setTime(QTime time)
+void NewSchedule::setTime(QTime time)
 {
     ui->timeEdit->setTime(time);
 }
 
-void newschedule::setRepeat(QString variant)
+void NewSchedule::setRepeat(QString variant)
 {
     int index = ui->repeatBox->findData(variant);
     if(index != -1){
@@ -43,7 +44,7 @@ void newschedule::setRepeat(QString variant)
     }
 }
 
-newschedule::~newschedule()
+NewSchedule::~NewSchedule()
 {
     delete ui;
 }

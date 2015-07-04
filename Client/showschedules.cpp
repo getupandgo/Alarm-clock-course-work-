@@ -25,18 +25,19 @@ void showschedules::onSelectionChanged()
     QDate selected = ui->calendarWidget->selectedDate();
 
     //implement send data to the server/controller
-
+/*
     if(!packet.isNull())
         ui->dataLabel->setText("Schedule on " + selected.toString(Qt::ISODate) + ": ");
     else
         ui->dataLabel->setText("No schedules on " + selected.toString(Qt::ISODate) + ".");
+*/
 }
 
 void showschedules::onChangeButtonClicked()
 {
     if(ui->alarmList->selectedItems().isEmpty()) return;
 
-    newschedule *newScheduleWidget = new newschedule();
+    NewSchedule *newScheduleWidget = new NewSchedule();
 
     //newScheduleWidget->setTime();
     //newScheduleWidget->setDate();
@@ -49,7 +50,7 @@ void showschedules::onChangeButtonClicked()
 
 void showschedules::onDeleteButtonClicked()
 {
-    QList <QWidgetItem *> items = ui->alarmList->selectedItems();
+    QList <QListWidgetItem *> items = ui->alarmList->selectedItems();
     if(items.isEmpty()) return;
 
     for(int i = 0; i < items.size(); ++i){
@@ -57,11 +58,13 @@ void showschedules::onDeleteButtonClicked()
     }
     //QString name = ui->alarmList->selectedItems();
     //send to server to delete
+    /*
     QList <QListWidgetItem*> list = ui->alarmList->findItems(name, Qt::MatchFixedString);
     int row = ui->alarmList->row(list.first());
     QListWidgetItem* item = ui->alarmList->takeItem(row);
 
     delete item;
+    */
 }
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>newschedule</class>
- <widget class="QWidget" name="newschedule">
+ <class>NewSchedule</class>
+ <widget class="QWidget" name="NewSchedule">
   <property name="geometry">
    <rect>
     <x>0</x>

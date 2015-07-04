@@ -2,6 +2,7 @@
 #define SHOWSCHEDULES_H
 
 #include <QWidget>
+#include <QWidgetItem>
 
 namespace Ui {
 class showschedules;

@@ -1,6 +1,6 @@
 #include <QApplication>
 
-#include "mainwindow.h"
+#include "controller.h"
 /*
 Вариант №19
 Программный продукт: "Будильник".
@@ -23,9 +23,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
 
-    //w.show();
+    Controller cc;
 
     return a.exec();
 }

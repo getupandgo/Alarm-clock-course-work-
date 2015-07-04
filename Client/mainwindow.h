@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QMessageBox>
 
+#include "connectiondialog.h"
 #include "showschedules.h"
 #include "newschedule.h"
 #include "statistics.h"
@@ -22,14 +23,24 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void newSchedule(schedule created);
+    void newConnection(QString ip, int port);
+
 private slots:
     void onNewScheduleAction();
     void onShowSchedulesAction();
     void onStatisticsAction();
 
 private:
+    void createTrayMenu();
+
     Ui::MainWindow *ui;
-    QSystemTrayIcon *trayIcon;
+    QSystemTrayIcon *trayIcon = NULL;
+
+public:
+    ConnectionDialog* chooseServer;
+
 };
 
 #endif // MAINWINDOW_H
