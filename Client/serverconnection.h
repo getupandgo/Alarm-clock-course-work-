@@ -21,7 +21,7 @@ public:
 
     void sendNewSchedule(Schedule created);
     void sendSelectedDate(QString date);
-    void sendDeleted(Schedule created);
+    void sendRemoved(Schedule removed);
     void sendPostpone();
 
 public slots:
@@ -38,7 +38,7 @@ signals:
 
 private:
     QTcpSocket *sendToServer = NULL;
-    //QTcpSocket *receiveFromClient = NULL;
+
     //bad
     qint16 blockSize;
     QDataStream *in = NULL;

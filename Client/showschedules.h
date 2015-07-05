@@ -20,6 +20,7 @@ public:
 
 signals:
     void dateRequested(QString date);
+    void removeSchedule(Schedule removed);
 
 private slots:
     void onSelectionChanged();

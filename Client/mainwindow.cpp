@@ -72,11 +72,16 @@ void MainWindow::onShowSchedulesAction()
     ShowSchedules *showSchedulesWidget = new ShowSchedules();
     showSchedulesWidget->show();
 
+    //signals to pass data to controller from widget through mainwindow
     connect(showSchedulesWidget, SIGNAL(dateRequested(QString)),
             this, SIGNAL(dateRequested(QString)));
+    connect(showSchedulesWidget, SIGNAL(removeSchedule(Schedule)),
+            this, SIGNAL(scheduleRemoved(Schedule)));
 
+    //signals to pass data from controller to widget through mainwindow
     connect(this, SIGNAL(displaySchedule(Schedule)),
             showSchedulesWidget, SLOT(onScheduleReceived(Schedule)));
+
 }
 
 void MainWindow::onStatisticsAction()

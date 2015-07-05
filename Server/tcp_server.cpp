@@ -34,14 +34,21 @@ TCPServer::TCPServer() : server(0), networkSession(0)
 
     database = new Watcher();
 
+    //transfer data from server to watcher
+
     connect(this, SIGNAL(newSchedule(qint32, Schedule)),
             database, SLOT(addNewSchedule(qint32, Schedule)));
 
     connect(this, SIGNAL(selectDate(qint32, QString)),
             database, SLOT(searchSelected(qint32, QString)));
 
+    connect(this, SIGNAL(removeSchedule(qint32,Schedule)),
+            database, SLOT(removeSchedule(qint32,Schedule)));
+
     connect(this, SIGNAL(postpone(qint32)),
             database, SLOT(onPostpone(qint32)));
+
+    //transfer data from watcher to server
 
     connect(database, SIGNAL(sendSchedule(qint32, Schedule)),
             this, SLOT(sendSchedule(qint32, Schedule)));
@@ -253,7 +260,8 @@ void TCPServer::sendSchedule(qint32 ip, Schedule snd)
     out.device()->seek(sizeof(quint16));
     out << (quint16)(block.size() - 2 * sizeof(quint16));
     //bad
-    receiveFromClient->write(block);
+    qDebug() << receiveFromClient->write(block)
+             << "bytes written";
 }
 
 TCPServer::~TCPServer()

@@ -29,15 +29,20 @@ void ServerConnection::connectToServer(QString host, int port)
         qDebug() << "got timeout!"
                  << sendToServer->error();
 
+    blockSize = 0;
+
 }
 
 void ServerConnection::onData()
 {
     in = new QDataStream(sendToServer);
+    //QByteArray dat =  sendToServer->readAll();
+    //qDebug() << dat;
     qint16 packt;
     *in >> packt;
 
-    blockSize = 0;
+
+    //blockSize = 0;
 
     switch(packt)
     {
@@ -60,7 +65,6 @@ void ServerConnection::onData()
 
     default: throw packt;
     }
-    delete in;
 }
 
 void ServerConnection::decodeSelect()
@@ -98,6 +102,11 @@ void ServerConnection::decodeSelect()
     emit receivedSchedule(news);
 
     blockSize = 0;
+
+    if(!sendToServer->atEnd()){
+        delete in;
+        onData();
+    }
 
 }
 
@@ -137,16 +146,16 @@ void ServerConnection::sendSelectedDate(QString date)
 
 }
 
-void ServerConnection::sendDeleted(Schedule created){
+void ServerConnection::sendRemoved(Schedule removed){
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
 
     out << (quint16)REMOVE
         << (quint16)0
-        << created.time.toUtf8()
-        << created.date.toUtf8()
-        << created.repeat.toUtf8();
+        << removed.time.toUtf8()
+        << removed.date.toUtf8()
+        << removed.repeat.toUtf8();
 
     out.device()->seek(sizeof(quint16));
     out << (quint16)(block.size() - 2 * sizeof(quint16));

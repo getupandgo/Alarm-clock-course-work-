@@ -13,7 +13,7 @@ void Watcher::addNewSchedule(qint32 key, Schedule neww)
 
 void Watcher::searchSelected(qint32 key, QString date)
 {
-    QMap <qint32, Schedule>::const_iterator i = schedules.find(key);
+    QMultiMap <qint32, Schedule>::const_iterator i = schedules.find(key);
     Schedule find;
     while (i != schedules.end() && i.key() == key)
     {

@@ -6,17 +6,18 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
     serverSocket = new ServerConnection();
 
-    //connect(serverSocket, SIGNAL(connectionError(QString)),
-            //w->chooseServer, SLOT(displayError(QString)));
-
     connect(w, SIGNAL(newConnection(QString,int)),
             this, SLOT(connectToServer(QString,int)));
 
+    //requests to the server
     connect(w, SIGNAL(newSchedule(Schedule)),
             this, SLOT(sendNewSchedule(Schedule)));
 
     connect(w, SIGNAL(dateRequested(QString)),
             this, SLOT(sendDate(QString)));
+
+    connect(w, SIGNAL(scheduleRemoved(Schedule)),
+            this, SLOT(sendRemoved(Schedule)));
 
     //answers from the server
     connect(serverSocket, SIGNAL(receivedSchedule(Schedule)),
@@ -37,6 +38,11 @@ void Controller::sendNewSchedule(Schedule created)
 void Controller::sendDate(QString date)
 {
     serverSocket->sendSelectedDate(date);
+}
+
+void Controller::sendRemoved(Schedule removed)
+{
+    serverSocket->sendRemoved(removed);
 }
 
 Controller::~Controller()

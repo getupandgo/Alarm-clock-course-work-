@@ -28,6 +28,8 @@ void ShowSchedules::onSelectionChanged()
 
     ui->dataLabel->setText("No schedules on " + selected.toString(Qt::ISODate) + ".");
 
+    ui->alarmList->clear();
+
 }
 
 void ShowSchedules::onChangeButtonClicked()
@@ -41,9 +43,9 @@ void ShowSchedules::onChangeButtonClicked()
         NewSchedule *newScheduleWidget = new NewSchedule();
 
         QStringList splittedRepeat = selected->text().split(" ");
-        QString stringDate = selected->text().left(5);
-        int hh = stringDate.left(2).toUInt();
-        int mm = stringDate.right(2).toUInt();
+        QString stringTime = selected->text().left(5);
+        int hh = stringTime.left(2).toUInt();
+        int mm = stringTime.right(2).toUInt();
 
         QDate currentDate = ui->calendarWidget->selectedDate();
         QString currentRepeat = splittedRepeat.at(3);
@@ -60,20 +62,35 @@ void ShowSchedules::onChangeButtonClicked()
 
 void ShowSchedules::onDeleteButtonClicked()
 {
-    QList <QListWidgetItem *> items = ui->alarmList->selectedItems();
+    QList <QListWidgetItem*> items = ui->alarmList->selectedItems();
     if(items.isEmpty()) return;
 
-    for(int i = 0; i < items.size(); ++i){
-        //
+    QListWidgetItem *selected;
+
+    foreach(selected, items)
+    {
+        QStringList splittedRepeat = selected->text().split(" ");
+
+        QString currentTime = selected->text().left(5);
+        QDate currentDate = ui->calendarWidget->selectedDate();
+        QString currentRepeat = splittedRepeat.at(3);
+
+        Schedule deleted(currentTime,
+                 currentDate.toString(Qt::ISODate),
+                 currentRepeat);
+
+        int row = ui->alarmList->row(items.first());
+        QListWidgetItem* item = ui->alarmList->takeItem(row);
+
+        delete item;
+
+        emit removeSchedule(deleted);
     }
     //QString name = ui->alarmList->selectedItems();
     //send to server to delete
     /*
     QList <QListWidgetItem*> list = ui->alarmList->findItems(name, Qt::MatchFixedString);
-    int row = ui->alarmList->row(list.first());
-    QListWidgetItem* item = ui->alarmList->takeItem(row);
 
-    delete item;
     */
 }
 
