@@ -34,12 +34,13 @@ signals:
     void connectionError(QString error);
     //void gotData(QByteArray, QString);
 
-    void displaySchedule(Schedule received);
+    void receivedSchedule(Schedule received);
 
 private:
-    QTcpSocket* socket = NULL;
+    QTcpSocket *sendToServer = NULL;
+    //QTcpSocket *receiveFromClient = NULL;
     //bad
-    int blockSize;
+    qint16 blockSize;
     QDataStream *in = NULL;
 
 private slots:

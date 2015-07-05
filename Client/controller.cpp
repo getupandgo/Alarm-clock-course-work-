@@ -17,6 +17,10 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
     connect(w, SIGNAL(dateRequested(QString)),
             this, SLOT(sendDate(QString)));
+
+    //answers from the server
+    connect(serverSocket, SIGNAL(receivedSchedule(Schedule)),
+            w, SIGNAL(displaySchedule(Schedule)));
 }
 
 void Controller::connectToServer(QString ip, int port)
@@ -27,6 +31,7 @@ void Controller::connectToServer(QString ip, int port)
 void Controller::sendNewSchedule(Schedule created)
 {
     serverSocket->sendNewSchedule(created);
+    //serverSocket->sendPostpone();
 }
 
 void Controller::sendDate(QString date)

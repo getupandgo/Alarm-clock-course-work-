@@ -2,11 +2,13 @@
 
 ServerConnection::ServerConnection()
 {
-    socket = new QTcpSocket(this);
-    connect(socket, SIGNAL(readyRead()),
+    sendToServer = new QTcpSocket(this);
+    //receiveFromClient = new QTcpSocket(this);
+
+    connect(sendToServer, SIGNAL(readyRead()),
             this, SLOT(onData()));
 
-    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
+    connect(sendToServer, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(parseError(QAbstractSocket::SocketError)));
 }
 
@@ -16,22 +18,22 @@ void ServerConnection::connectToServer(QString host, int port)
 
     try
     {
-        socket->connectToHost(host, port);
+        sendToServer->connectToHost(host, port);
     }
     catch(QAbstractSocket::SocketError)
     {
         throw;
     }
 
-    if(!socket->waitForConnected(3000))
+    if(!sendToServer->waitForConnected(3000))
         qDebug() << "got timeout!"
-                 << socket->error();
+                 << sendToServer->error();
 
 }
 
 void ServerConnection::onData()
 {
-    in = new QDataStream(socket);
+    in = new QDataStream(sendToServer);
     qint16 packt;
     *in >> packt;
 
@@ -66,13 +68,13 @@ void ServerConnection::decodeSelect()
     in->setVersion(QDataStream::Qt_4_0);
 
     if (blockSize == 0) {
-        if (socket->bytesAvailable() < (int)sizeof(quint16))
+        if (sendToServer->bytesAvailable() < (int)sizeof(quint16))
             return;
 
         *in >> blockSize;
     }
 
-    if (socket->bytesAvailable() < blockSize)
+    if (sendToServer->bytesAvailable() < blockSize)
         return;
 
     QByteArray time;
@@ -93,7 +95,7 @@ void ServerConnection::decodeSelect()
 
     Schedule news(stime, sdate, srepeat);
 
-    emit displaySchedule(news);
+    emit receivedSchedule(news);
 
     blockSize = 0;
 
@@ -114,16 +116,7 @@ void ServerConnection::sendNewSchedule(Schedule created)
     out.device()->seek(sizeof(quint16));
     out << (quint16)(block.size() - 2 * sizeof(quint16));
 
-        QByteArray dbg = block;   // create a copy to not alter the buffer itself
-        dbg.replace('\\', "\\\\"); // escape the backslash itself
-        dbg.replace('\0', "\\0");  // get rid of 0 characters
-        dbg.replace('\n', "\\n");
-        //dbg.replace('"', "\\\"");  // more special characters as you like
-        qDebug() << dbg;
-        QString data_string(block);
-        qDebug() << data_string;
-
-    socket->write(block);
+    sendToServer->write(block);
 
 }
 
@@ -140,7 +133,7 @@ void ServerConnection::sendSelectedDate(QString date)
     out.device()->seek(sizeof(quint16));
     out << (quint16)(block.size() - 2 * sizeof(quint16));
 
-    socket->write(block);
+    sendToServer->write(block);
 
 }
 
@@ -158,7 +151,7 @@ void ServerConnection::sendDeleted(Schedule created){
     out.device()->seek(sizeof(quint16));
     out << (quint16)(block.size() - 2 * sizeof(quint16));
 
-    socket->write(block);
+    sendToServer->write(block);
 }
 
 void ServerConnection::sendPostpone()
@@ -169,7 +162,7 @@ void ServerConnection::sendPostpone()
 
     out << (quint16)POSTPONE;
 
-    socket->write(block);
+    sendToServer->write(block);
 
 }
 
@@ -191,7 +184,7 @@ void ServerConnection::parseError(QAbstractSocket::SocketError socketError)
         break;
 
     default:
-        emit connectionError("The following error occurred: " + socket->errorString());
+        emit connectionError("The following error occurred: " + sendToServer->errorString());
 
     }
 

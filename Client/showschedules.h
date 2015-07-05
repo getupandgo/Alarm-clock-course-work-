@@ -4,17 +4,19 @@
 #include <QWidget>
 #include <QWidgetItem>
 
+#include "../resources/schedule.h"
+
 namespace Ui {
-class showschedules;
+class ShowSchedules;
 }
 
-class showschedules : public QWidget
+class ShowSchedules : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit showschedules(QWidget *parent = 0);
-    ~showschedules();
+    explicit ShowSchedules(QWidget *parent = 0);
+    ~ShowSchedules();
 
 signals:
     void dateRequested(QString date);
@@ -24,8 +26,10 @@ private slots:
     void onChangeButtonClicked();
     void onDeleteButtonClicked();
 
+    void onScheduleReceived(Schedule received);
+
 private:
-    Ui::showschedules *ui;
+    Ui::ShowSchedules *ui;
 };
 
 #endif // SHOWSCHEDULES_H

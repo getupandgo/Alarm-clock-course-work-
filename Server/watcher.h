@@ -25,7 +25,7 @@ public slots:
     void onPostpone(qint32 key);
 
 private:
-    QMap <qint32, Schedule> schedules;
+    QMultiMap <qint32, Schedule> schedules;
     QMap <qint32, qint32> postpones;
 };
 

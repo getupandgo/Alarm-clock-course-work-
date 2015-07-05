@@ -2,9 +2,9 @@
 #include "newschedule.h"
 #include "ui_showschedules.h"
 
-showschedules::showschedules(QWidget *parent) :
+ShowSchedules::ShowSchedules(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::showschedules)
+    ui(new Ui::ShowSchedules)
 {
     ui->setupUi(this);
 
@@ -20,37 +20,45 @@ showschedules::showschedules(QWidget *parent) :
     ui->dataLabel->setText("Choose date to see schedule");
 }
 
-void showschedules::onSelectionChanged()
+void ShowSchedules::onSelectionChanged()
 {
     QDate selected = ui->calendarWidget->selectedDate();
 
     emit dateRequested(selected.toString(Qt::ISODate));
 
-    //implement send data to the server/controller
-/*
-    if(!packet.isNull())
-        ui->dataLabel->setText("Schedule on " + selected.toString(Qt::ISODate) + ": ");
-    else
-        ui->dataLabel->setText("No schedules on " + selected.toString(Qt::ISODate) + ".");
-*/
+    ui->dataLabel->setText("No schedules on " + selected.toString(Qt::ISODate) + ".");
+
 }
 
-void showschedules::onChangeButtonClicked()
+void ShowSchedules::onChangeButtonClicked()
 {
-    if(ui->alarmList->selectedItems().isEmpty()) return;
+    QList <QListWidgetItem*> items = ui->alarmList->selectedItems();
+    if(items.isEmpty()) return;
 
-    NewSchedule *newScheduleWidget = new NewSchedule();
+    QListWidgetItem *selected;
 
-    //newScheduleWidget->setTime();
-    //newScheduleWidget->setDate();
-    //newScheduleWidget->setRepeat();
+    foreach(selected, items){
+        NewSchedule *newScheduleWidget = new NewSchedule();
 
-    newScheduleWidget->show();
+        QStringList splittedRepeat = selected->text().split(" ");
+        QString stringDate = selected->text().left(5);
+        int hh = stringDate.left(2).toUInt();
+        int mm = stringDate.right(2).toUInt();
 
-    delete newScheduleWidget;
+        QDate currentDate = ui->calendarWidget->selectedDate();
+        QString currentRepeat = splittedRepeat.at(3);
+
+        newScheduleWidget->setWindowTitle("Change schedule");
+        newScheduleWidget->setTime(QTime(hh,mm));
+        newScheduleWidget->setDate(currentDate);
+        newScheduleWidget->setRepeat(currentRepeat);
+
+        newScheduleWidget->show();
+    }
+
 }
 
-void showschedules::onDeleteButtonClicked()
+void ShowSchedules::onDeleteButtonClicked()
 {
     QList <QListWidgetItem *> items = ui->alarmList->selectedItems();
     if(items.isEmpty()) return;
@@ -69,8 +77,15 @@ void showschedules::onDeleteButtonClicked()
     */
 }
 
+void ShowSchedules::onScheduleReceived(Schedule received)
+{
+    ui->dataLabel->setText("Schedule on " + received.date + ": ");
 
-showschedules::~showschedules()
+    ui->alarmList->addItem(received.time + "   " + received.repeat + " repeating");
+}
+
+
+ShowSchedules::~ShowSchedules()
 {
     delete ui;
 }

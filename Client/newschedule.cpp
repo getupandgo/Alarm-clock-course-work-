@@ -23,7 +23,11 @@ void NewSchedule::onAcceptButtonClicked(){
 
     Schedule created(time, date, repeat);
 
+    this->setVisible(false);
+
     emit newScheduleCreated(created);
+
+    this->deleteLater();
 }
 
 void NewSchedule::setDate(QDate date)

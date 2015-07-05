@@ -40,8 +40,12 @@ TCPServer::TCPServer() : server(0), networkSession(0)
     connect(this, SIGNAL(selectDate(qint32, QString)),
             database, SLOT(searchSelected(qint32, QString)));
 
-    connect(database, SIGNAL(sendSchedule(qint32,Schedule)),
-            this, SLOT(sendSchedule(qint32,Schedule)));
+    connect(this, SIGNAL(postpone(qint32)),
+            database, SLOT(onPostpone(qint32)));
+
+    connect(database, SIGNAL(sendSchedule(qint32, Schedule)),
+            this, SLOT(sendSchedule(qint32, Schedule)));
+
 }
 
 void TCPServer::sessionOpened()
@@ -86,12 +90,12 @@ void TCPServer::sessionOpened()
 
 void TCPServer::newMember(){
 
-    client = server->nextPendingConnection();
+    receiveFromClient = server->nextPendingConnection();
 
-    if(client){
-        qDebug() << '\n' << client->peerAddress().toString() << "connected";
+    if(receiveFromClient){
+        qDebug() << '\n' << receiveFromClient->peerAddress().toString() << "connected";
 
-        connect(client, SIGNAL(readyRead()),
+        connect(receiveFromClient, SIGNAL(readyRead()),
                 this, SLOT(onData()));
 
         blockSize = 0;
@@ -100,7 +104,7 @@ void TCPServer::newMember(){
 
 void TCPServer::onData()
 {
-    in = new QDataStream(client);
+    in = new QDataStream(receiveFromClient);
     qint16 pckt;
     *in >> pckt;
 
@@ -124,7 +128,7 @@ void TCPServer::onData()
 
     case POSTPONE:
         qDebug() << "\ngot POSTPONE";
-        emit postpone(client->peerAddress().toIPv4Address());
+        emit postpone(receiveFromClient->peerAddress().toIPv4Address());
     break;
 
     default: throw pckt;
@@ -137,13 +141,13 @@ void TCPServer::decodeNew()
     in->setVersion(QDataStream::Qt_4_0);
 
     if (blockSize == 0) {
-        if (client->bytesAvailable() < (int)sizeof(quint16))
+        if (receiveFromClient->bytesAvailable() < (int)sizeof(quint16))
             return;
 
         *in >> blockSize;
     }
 
-    if (client->bytesAvailable() < blockSize)
+    if (receiveFromClient->bytesAvailable() < blockSize)
         return;
 
     QByteArray time;
@@ -166,7 +170,7 @@ void TCPServer::decodeNew()
 
     blockSize = 0;
 
-    emit newSchedule(client->peerAddress().toIPv4Address(), news);
+    emit newSchedule(receiveFromClient->peerAddress().toIPv4Address(), news);
 
 }
 
@@ -175,13 +179,13 @@ void TCPServer::decodeSelect()
     in->setVersion(QDataStream::Qt_4_0);
 
     if (blockSize == 0) {
-        if (client->bytesAvailable() < (int)sizeof(quint16))
+        if (receiveFromClient->bytesAvailable() < (int)sizeof(quint16))
             return;
 
         *in >> blockSize;
     }
 
-    if (client->bytesAvailable() < blockSize)
+    if (receiveFromClient->bytesAvailable() < blockSize)
         return;
 
     QByteArray date;
@@ -190,7 +194,7 @@ void TCPServer::decodeSelect()
 
     qDebug() << sdate;
 
-    emit selectDate(client->peerAddress().toIPv4Address(), sdate);
+    emit selectDate(receiveFromClient->peerAddress().toIPv4Address(), sdate);
 
     blockSize = 0;
 
@@ -201,13 +205,13 @@ void TCPServer::decodeRemove()
     in->setVersion(QDataStream::Qt_4_0);
 
     if (blockSize == 0) {
-        if (client->bytesAvailable() < (int)sizeof(quint16))
+        if (receiveFromClient->bytesAvailable() < (int)sizeof(quint16))
             return;
 
         *in >> blockSize;
     }
 
-    if (client->bytesAvailable() < blockSize)
+    if (receiveFromClient->bytesAvailable() < blockSize)
         return;
 
     QByteArray time;
@@ -228,7 +232,7 @@ void TCPServer::decodeRemove()
 
     Schedule removes(stime, sdate, srepeat);
 
-    emit removeSchedule(client->peerAddress().toIPv4Address(), removes);
+    emit removeSchedule(receiveFromClient->peerAddress().toIPv4Address(), removes);
 
     blockSize = 0;
 
@@ -249,11 +253,11 @@ void TCPServer::sendSchedule(qint32 ip, Schedule snd)
     out.device()->seek(sizeof(quint16));
     out << (quint16)(block.size() - 2 * sizeof(quint16));
     //bad
-    client->write(block);
+    receiveFromClient->write(block);
 }
 
 TCPServer::~TCPServer()
 {
-    delete client;
+    delete receiveFromClient;
     delete server;
 }

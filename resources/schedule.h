@@ -10,6 +10,8 @@ struct Schedule{
 
     Schedule();
     Schedule(QString time, QString date, QString repeat);
+
+    bool operator == (const Schedule rvalue);
 };
 
 #endif // SCHEDULE_H

@@ -28,6 +28,8 @@ signals:
     void newSchedule(Schedule created);
     void dateRequested(QString date);
 
+    void displaySchedule(Schedule received);
+
 private slots:
     void onNewScheduleAction();
     void onShowSchedulesAction();

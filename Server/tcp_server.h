@@ -35,7 +35,8 @@ signals:
 
 private:
     QTcpServer *server = NULL;
-    QTcpSocket *client = NULL;
+    QTcpSocket *receiveFromClient = NULL;
+    //QTcpSocket *sendToClient = NULL;
     QNetworkSession *networkSession = NULL;
 
     Watcher *database = NULL;

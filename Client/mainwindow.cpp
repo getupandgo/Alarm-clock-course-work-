@@ -69,11 +69,14 @@ void MainWindow::createTrayMenu()
 
 void MainWindow::onShowSchedulesAction()
 {
-    showschedules *showSchedulesWidget = new showschedules();
+    ShowSchedules *showSchedulesWidget = new ShowSchedules();
     showSchedulesWidget->show();
 
     connect(showSchedulesWidget, SIGNAL(dateRequested(QString)),
             this, SIGNAL(dateRequested(QString)));
+
+    connect(this, SIGNAL(displaySchedule(Schedule)),
+            showSchedulesWidget, SLOT(onScheduleReceived(Schedule)));
 }
 
 void MainWindow::onStatisticsAction()

@@ -108,6 +108,7 @@ void ConnectionDialog::onConnectButtonClicked()
                     ui->portLineEdit->text().toInt());
 
     this->setVisible(false);
+    this->deleteLater();
 }
 
 ConnectionDialog::~ConnectionDialog()
