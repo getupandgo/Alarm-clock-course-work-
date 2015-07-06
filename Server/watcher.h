@@ -17,9 +17,10 @@ public:
 
 signals:
     void sendSchedule(qint32 ip, Schedule find);
+    void startWatching();
 
 public slots:
-    void addNewSchedule(qint32 key, Schedule neww);
+    void addNewSchedule(qint32 key, Schedule newSchedule);
     void searchSelected(qint32 key, QString date);
     void removeSchedule(qint32 key, Schedule removed);
     void onPostpone(qint32 key);

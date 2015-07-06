@@ -65,6 +65,10 @@ void ServerConnection::onData()
 
     default: throw packt;
     }
+    if(in){
+        delete in;
+        in = NULL;
+    }
 }
 
 void ServerConnection::decodeSelect()
@@ -104,7 +108,6 @@ void ServerConnection::decodeSelect()
     blockSize = 0;
 
     if(!sendToServer->atEnd()){
-        delete in;
         onData();
     }
 
