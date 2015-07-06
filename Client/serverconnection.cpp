@@ -63,8 +63,15 @@ void ServerConnection::onData()
         //decodePostpone();
     break;
 
-    default: throw packt;
+    case ALARM:
+        emit signalAlarm();
+    break;
+
+    default:
+        throw packt;
+
     }
+
     if(in){
         delete in;
         in = NULL;

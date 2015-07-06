@@ -6,7 +6,8 @@ enum pckg_t
     NEW,
     SELECT,
     REMOVE,
-    POSTPONE
+    POSTPONE,
+    ALARM
 };
 
 #endif // PACKET_H

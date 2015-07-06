@@ -99,6 +99,15 @@ void MainWindow::onNewScheduleAction()
             this, SIGNAL(newSchedule(Schedule)));
 }
 
+void MainWindow::displayAlarm()
+{
+    AlarmWidget *alarm = new AlarmWidget();
+    alarm->show();
+
+    connect(alarm, SIGNAL(postpone()),
+            this, SIGNAL(onPostpone()));
+}
+
 MainWindow::~MainWindow()
 {
     delete trayIcon;

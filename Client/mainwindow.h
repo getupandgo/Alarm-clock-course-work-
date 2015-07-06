@@ -10,6 +10,7 @@
 #include "showschedules.h"
 #include "newschedule.h"
 #include "statistics.h"
+#include "alarmwidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,10 +29,14 @@ signals:
     //from gui to server
     void newSchedule(Schedule created);
     void dateRequested(QString date);
+    void onPostpone();
     void scheduleRemoved(Schedule removed);
 
     //from server to gui
     void displaySchedule(Schedule received);
+
+public slots:
+    void displayAlarm();
 
 private slots:
     void onNewScheduleAction();

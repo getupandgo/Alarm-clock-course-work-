@@ -19,6 +19,7 @@ public slots:
     void sendNewSchedule(Schedule created);
     void sendDate(QString date);
     void sendRemoved(Schedule removed);
+    void sendPostpone();
 
 private:
     MainWindow *w = NULL;

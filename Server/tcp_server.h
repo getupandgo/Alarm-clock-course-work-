@@ -43,6 +43,9 @@ private:
     qint16 blockSize;
     QDataStream *in = NULL;
 
+public slots:
+    void sendAlarm();
+
 private slots:
     void newMember();
     void sessionOpened();

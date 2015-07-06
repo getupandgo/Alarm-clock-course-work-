@@ -31,6 +31,7 @@ signals:
     void gotSchedule();
     void gotRing();
     void gotStatistics();
+    void signalAlarm();
     void connectionError(QString error);
     //void gotData(QByteArray, QString);
 

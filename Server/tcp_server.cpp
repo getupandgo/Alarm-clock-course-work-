@@ -53,6 +53,9 @@ TCPServer::TCPServer() : server(0), networkSession(0)
     connect(database, SIGNAL(sendSchedule(qint32, Schedule)),
             this, SLOT(sendSchedule(qint32, Schedule)));
 
+    connect(database, SIGNAL(sendAlarm()),
+            this, SLOT(sendAlarm()));
+
 }
 
 void TCPServer::sessionOpened()
@@ -259,6 +262,18 @@ void TCPServer::sendSchedule(qint32 ip, Schedule snd)
 
     out.device()->seek(sizeof(quint16));
     out << (quint16)(block.size() - 2 * sizeof(quint16));
+    //bad
+    qDebug() << receiveFromClient->write(block)
+             << "bytes written";
+}
+
+void TCPServer::sendAlarm()
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_0);
+
+    out << (quint16)ALARM;
     //bad
     qDebug() << receiveFromClient->write(block)
              << "bytes written";

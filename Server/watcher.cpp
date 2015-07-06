@@ -2,7 +2,8 @@
 
 Watcher::Watcher()
 {
-    //work with files
+    connect(this, SIGNAL(startWatching()),
+            this, SLOT(onStartWatching()));
 }
 
 void Watcher::addNewSchedule(qint32 key, Schedule newSchedule)
@@ -104,6 +105,35 @@ void Watcher::removeSchedule(qint32 key, Schedule removed)
 void Watcher::onPostpone(qint32 key)
 {
     ++postpones[key];
+}
+
+void Watcher::onStartWatching()
+{
+    QDateTime now;
+    now.currentDateTime();
+
+    Schedule saved;
+    foreach(saved, schedules)
+    {
+        if(saved.date == now.date().toString(Qt::ISODate) &&
+           saved.time > now.time().toString() &&
+           !alarms.contains(saved.time))
+        {
+            alarms.push_back(saved.time);
+        }
+    }
+
+    QString alarmTime;
+
+    foreach(alarmTime, alarms)
+    {
+        int hh = alarmTime.left(2).toUInt();
+        int mm = alarmTime.right(2).toUInt();
+        int ms = (hh * 60 + mm) * 60 * 1000;
+
+        QTimer::singleShot(ms, this, SIGNAL(sendAlarm()));
+    }
+
 }
 
 //Watcher::~Watcher(){

@@ -16,12 +16,18 @@ Controller::Controller(QObject *parent) : QObject(parent)
     connect(w, SIGNAL(dateRequested(QString)),
             this, SLOT(sendDate(QString)));
 
+    connect(w, SIGNAL(onPostpone()),
+            this, SLOT(sendPostpone()));
+
     connect(w, SIGNAL(scheduleRemoved(Schedule)),
             this, SLOT(sendRemoved(Schedule)));
 
     //answers from the server
     connect(serverSocket, SIGNAL(receivedSchedule(Schedule)),
             w, SIGNAL(displaySchedule(Schedule)));
+
+    connect(serverSocket, SIGNAL(signalAlarm()),
+            w, SLOT(displayAlarm()));
 }
 
 void Controller::connectToServer(QString ip, int port)
@@ -43,6 +49,11 @@ void Controller::sendDate(QString date)
 void Controller::sendRemoved(Schedule removed)
 {
     serverSocket->sendRemoved(removed);
+}
+
+void Controller::sendPostpone()
+{
+    serverSocket->sendPostpone();
 }
 
 Controller::~Controller()
