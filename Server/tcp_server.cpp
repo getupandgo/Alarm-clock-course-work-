@@ -48,6 +48,9 @@ TCPServer::TCPServer() : server(0), networkSession(0)
     connect(this, SIGNAL(postpone(qint32)),
             database, SLOT(onPostpone(qint32)));
 
+    connect(this, SIGNAL(statistic(qint32)),
+            database, SLOT(onStatistic(qint32)));
+
     //transfer data from watcher to server
 
     connect(database, SIGNAL(sendSchedule(qint32, Schedule)),
@@ -55,6 +58,12 @@ TCPServer::TCPServer() : server(0), networkSession(0)
 
     connect(database, SIGNAL(sendAlarm()),
             this, SLOT(sendAlarm()));
+
+    connect(database, SIGNAL(sendStatistic(qint32,Schedule)),
+            this, SLOT(sendStatistic(qint32,Schedule)));
+
+    connect(database, SIGNAL(sendPostpone(qint32,qint32)),
+            this, SLOT(sendPostpone(qint32,qint32)));
 
 }
 
@@ -139,6 +148,11 @@ void TCPServer::onData()
     case POSTPONE:
         qDebug() << "\ngot POSTPONE";
         emit postpone(receiveFromClient->peerAddress().toIPv4Address());
+    break;
+
+    case STATISTIC:
+        qDebug() << "\ngot STATISTIC";
+        emit statistic(receiveFromClient->peerAddress().toIPv4Address());
     break;
 
     default: throw pckt;
@@ -274,6 +288,42 @@ void TCPServer::sendAlarm()
     out.setVersion(QDataStream::Qt_4_0);
 
     out << (quint16)ALARM;
+    //bad
+    qDebug() << receiveFromClient->write(block)
+             << "bytes written";
+}
+
+void TCPServer::sendStatistic(qint32 ip, Schedule snd)
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_0);
+
+    out << (quint16)STATISTIC
+        << (quint16)0
+        << snd.time.toUtf8()
+        << snd.date.toUtf8()
+        << snd.repeat.toUtf8();
+
+    out.device()->seek(sizeof(quint16));
+    out << (quint16)(block.size() - 2 * sizeof(quint16));
+    //bad
+    qDebug() << receiveFromClient->write(block)
+             << "bytes written";
+}
+
+void TCPServer::sendPostpone(qint32 ip, qint32 times)
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_0);
+
+    out << (quint16)POSTPONE
+        << (quint16)0
+        << times;
+
+    out.device()->seek(sizeof(quint16));
+    out << (quint16)(block.size() - 2 * sizeof(quint16));
     //bad
     qDebug() << receiveFromClient->write(block)
              << "bytes written";

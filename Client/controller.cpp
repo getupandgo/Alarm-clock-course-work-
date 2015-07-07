@@ -22,6 +22,9 @@ Controller::Controller(QObject *parent) : QObject(parent)
     connect(w, SIGNAL(scheduleRemoved(Schedule)),
             this, SLOT(sendRemoved(Schedule)));
 
+    connect(w, SIGNAL(getStatistic()),
+            this, SLOT(sendStatistic()));
+
     //answers from the server
     connect(serverSocket, SIGNAL(receivedSchedule(Schedule)),
             w, SIGNAL(displaySchedule(Schedule)));
@@ -54,6 +57,11 @@ void Controller::sendRemoved(Schedule removed)
 void Controller::sendPostpone()
 {
     serverSocket->sendPostpone();
+}
+
+void Controller::sendStatistic()
+{
+    serverSocket->sendStatistic();
 }
 
 Controller::~Controller()

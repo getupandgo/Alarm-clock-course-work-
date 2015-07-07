@@ -31,6 +31,7 @@ signals:
     void dateRequested(QString date);
     void onPostpone();
     void scheduleRemoved(Schedule removed);
+    void getStatistic();
 
     //from server to gui
     void displaySchedule(Schedule received);
@@ -48,9 +49,10 @@ private:
 
     Ui::MainWindow *ui;
     QSystemTrayIcon *trayIcon = NULL;
+    AlarmWidget *alarm = NULL;
 
 public:
-    ConnectionDialog *chooseServer;
+    ConnectionDialog *chooseServer = NULL;
 
 };
 

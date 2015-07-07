@@ -23,6 +23,7 @@ public:
     void sendSelectedDate(QString date);
     void sendRemoved(Schedule removed);
     void sendPostpone();
+    viod sendStatistic();
 
 public slots:
     void onData();

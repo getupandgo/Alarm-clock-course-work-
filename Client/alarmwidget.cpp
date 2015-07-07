@@ -3,7 +3,7 @@
 
 AlarmWidget::AlarmWidget(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::AlarmWidget)
+    ui(new Ui::AlarmWidget), postpones(0)
 {
     ui->setupUi(this);
 
@@ -11,7 +11,16 @@ AlarmWidget::AlarmWidget(QWidget *parent) :
             this, SLOT(onAcceptButtonPressed()));
 
     connect(ui->postponeButton, SIGNAL(pressed()),
-            this, SIGNAL(postpone()));
+            this, SLOT(onPostponeButtonPressed()));
+}
+
+void AlarmWidget::onPostponeButtonPressed()
+{
+    this->setVisible(false);
+
+    ++postpones;
+
+    emit postpone();
 }
 
 void AlarmWidget::onAcceptButtonPressed()

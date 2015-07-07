@@ -4,19 +4,22 @@
 #include <QWidget>
 
 namespace Ui {
-class statistics;
+class Statistics;
 }
 
-class statistics : public QWidget
+class Statistics : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit statistics(QWidget *parent = 0);
-    ~statistics();
+    explicit Statistics(QWidget *parent = 0);
+    ~Statistics();
+
+signals:
+    void getStatistics();
 
 private:
-    Ui::statistics *ui;
+    Ui::Statistics *ui;
 };
 
 #endif // STATISTICS_H

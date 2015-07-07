@@ -86,8 +86,14 @@ void MainWindow::onShowSchedulesAction()
 
 void MainWindow::onStatisticsAction()
 {
-    statistics *statisticsWidget = new statistics();
+    Statistics *statisticsWidget = new Statistics();
+
+    //signals to pass data to controller from widget through mainwindow
+    connect(statisticsWidget, SIGNAL(getStatistics()),
+            this, SIGNAL(getStatistic()));
+
     statisticsWidget->show();
+
 }
 
 void MainWindow::onNewScheduleAction()
@@ -101,7 +107,9 @@ void MainWindow::onNewScheduleAction()
 
 void MainWindow::displayAlarm()
 {
-    AlarmWidget *alarm = new AlarmWidget();
+    if(!alarm)
+        alarm = new AlarmWidget();
+
     alarm->show();
 
     connect(alarm, SIGNAL(postpone()),

@@ -32,6 +32,7 @@ signals:
     void selectDate(qint32 addr, QString date);
     void removeSchedule(qint32 addr, Schedule remove);
     void postpone(qint32 addr);
+    void statistic(qint32 addr);
 
 private:
     QTcpServer *server = NULL;
@@ -43,9 +44,6 @@ private:
     qint16 blockSize;
     QDataStream *in = NULL;
 
-public slots:
-    void sendAlarm();
-
 private slots:
     void newMember();
     void sessionOpened();
@@ -56,6 +54,9 @@ private slots:
     void decodeRemove();
 
     void sendSchedule(qint32 ip, Schedule snd);
+    void sendAlarm();
+    void sendStatistic(qint32 ip, Schedule snd);
+    void sendPostpone(qint32 ip, qint32 postpones);
 };
 
 #endif // TCP_SERVER_H

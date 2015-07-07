@@ -105,12 +105,20 @@ void Watcher::removeSchedule(qint32 key, Schedule removed)
 void Watcher::onPostpone(qint32 key)
 {
     ++postpones[key];
+    QTimer::singleShot(10 * 60 * 1000, this, SIGNAL(sendAlarm()));
 }
 
 void Watcher::onStartWatching()
 {
     QDateTime now;
-    now.currentDateTime();
+    now = QDateTime::currentDateTime();
+
+    QString time = now.time().toString();
+    time.chop(3);
+    int now_hh = time.left(2).toUInt();
+    int now_mm = time.right(2).toUInt();
+
+    now.setTime(QTime(now_hh, now_mm));
 
     Schedule saved;
     foreach(saved, schedules)
@@ -127,13 +135,31 @@ void Watcher::onStartWatching()
 
     foreach(alarmTime, alarms)
     {
-        int hh = alarmTime.left(2).toUInt();
-        int mm = alarmTime.right(2).toUInt();
-        int ms = (hh * 60 + mm) * 60 * 1000;
+        int alarm_hh = alarmTime.left(2).toUInt();
+        int alarm_mm = alarmTime.right(2).toUInt();
 
-        QTimer::singleShot(ms, this, SIGNAL(sendAlarm()));
+        QTime alarm(alarm_hh, alarm_mm);
+        int dt = now.time().msecsTo(alarm);
+
+        QTimer::singleShot(dt, this, SIGNAL(sendAlarm()));
     }
 
+}
+
+void Watcher::onStatistic(qint32 key)
+{
+
+    QMultiMap <qint32, Schedule>::const_iterator i = schedules.find(key);
+    Schedule find;
+
+    while (i != schedules.end() && i.key() == key)
+    {
+        find = i.value();
+        emit sendStatistic(key, find);
+        ++i;
+    }
+
+    emit sendPostpone(1, postpones[key]);
 }
 
 //Watcher::~Watcher(){

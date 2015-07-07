@@ -1,14 +1,15 @@
 #include "statistics.h"
 #include "ui_statistics.h"
 
-statistics::statistics(QWidget *parent) :
+Statistics::Statistics(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::statistics)
+    ui(new Ui::Statistics)
 {
     ui->setupUi(this);
+    emit getStatistics();
 }
 
-statistics::~statistics()
+Statistics::~Statistics()
 {
     delete ui;
 }

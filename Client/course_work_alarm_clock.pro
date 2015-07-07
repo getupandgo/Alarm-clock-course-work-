@@ -20,8 +20,9 @@ SOURCES += main.cpp \
     serverconnection.cpp \
     ../resources/schedule.cpp \
     connectiondialog.cpp \
-    controller.cpp \
-    alarmwidget.cpp
+    alarmwidget.cpp \
+    controller.cpp
+
 
 FORMS    += \
     newschedule.ui \
@@ -41,8 +42,8 @@ HEADERS += \
     ../resources/packet.h \
     ../resources/schedule.h \
     connectiondialog.h \
-    controller.h \
-    alarmwidget.h
+    alarmwidget.h \
+    controller.h
 
 RESOURCES += \
     images/images.qrc

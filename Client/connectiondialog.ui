@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>AlarmClock</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/trayicon.png</normaloff>:/trayicon.png</iconset>
+  </property>
   <widget class="QLineEdit" name="portLineEdit">
    <property name="geometry">
     <rect>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>statistics</class>
- <widget class="QWidget" name="statistics">
+ <class>Statistics</class>
+ <widget class="QWidget" name="Statistics">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,6 +17,16 @@
    <iconset resource="images/images.qrc">
     <normaloff>:/trayicon.png</normaloff>:/trayicon.png</iconset>
   </property>
+  <widget class="QGraphicsView" name="graphicsView">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>20</y>
+     <width>256</width>
+     <height>192</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="images/images.qrc"/>

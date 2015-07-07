@@ -185,6 +185,18 @@ void ServerConnection::sendPostpone()
 
 }
 
+void ServerConnection::sendStatistic()
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_0);
+
+    out << (quint16)STATISTIC;
+
+    sendToServer->write(block);
+
+}
+
 void ServerConnection::parseError(QAbstractSocket::SocketError socketError)
 {
     switch (socketError) {

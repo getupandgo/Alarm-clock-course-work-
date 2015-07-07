@@ -19,6 +19,7 @@ signals:
     void postpone();
 
 private slots:
+    void onPostponeButtonPressed();
     void onAcceptButtonPressed();
 
 private:
